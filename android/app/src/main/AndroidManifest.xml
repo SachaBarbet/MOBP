@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.github.sachabarbet.mobp">
+    package="com.example.mobp">
    <application
         android:label="mobp"
         android:name="${applicationName}"

@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "22769914613",
-    "project_id": "mobp-grap",
-    "storage_bucket": "mobp-grap.appspot.com"
+    "project_number": "761167563133",
+    "project_id": "mobp-sb",
+    "storage_bucket": "mobp-sb.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:22769914613:android:2e25a3b0f138eafe00ebbc",
+        "mobilesdk_app_id": "1:761167563133:android:fea85ab570bbbcb1cca414",
         "android_client_info": {
-          "package_name": "com.github.sachabarbet.mobp"
+          "package_name": "io.github.sachabarbet.mobp"
         }
       },
       "oauth_client": [
         {
-          "client_id": "22769914613-h0vgul4i2d4nkcbk7npa1ttpku2cbmp9.apps.googleusercontent.com",
+          "client_id": "761167563133-8avnprap7d97edsqn4otas2iq8rqp4om.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyC8lGj3gC97KVirfeZ3xG97usexnp62Rzo"
+          "current_key": "AIzaSyBt2LdqXY2Stkbc6dI5IPu0O6tO74dcAts"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "22769914613-h0vgul4i2d4nkcbk7npa1ttpku2cbmp9.apps.googleusercontent.com",
+              "client_id": "761167563133-8avnprap7d97edsqn4otas2iq8rqp4om.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

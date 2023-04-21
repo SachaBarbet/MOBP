@@ -1,4 +1,4 @@
-package com.github.sachabarbet.mobp
+package com.example.mobp
 
 import io.flutter.embedding.android.FlutterActivity
 
