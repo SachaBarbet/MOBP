@@ -20,18 +20,26 @@ class UserAuthentication {
     });
   }
 
-  static Future<void> signIn(String email, String password) async {
+  static Future<bool> signIn(String email, String password) async {
     if(auth.currentUser == null){
       try {
         await auth.signInWithEmailAndPassword(email: email, password: password);
         LocaleDatabase.db.update("UserData", {"value": email}, where: 'dataID = ?', whereArgs: ['login']);
         LocaleDatabase.db.update("UserData", {"value": password}, where: 'dataID = ?', whereArgs: ['password']);
-      } catch(e) {print(e);}
+        return true;
+      } catch(e) {}
     }
+    return false;
   }
 
-  static Future<void> signUp(String email, String password) async {
-    await auth.createUserWithEmailAndPassword(email: email, password: password);
+  static Future<bool> signUp(String email, String password) async {
+    if(auth.currentUser == null){
+      try {
+        await auth.createUserWithEmailAndPassword(email: email, password: password);
+        return true;
+      } catch(e) {}
+    }
+    return false;
   }
 
   static Future<void> signOut() async {

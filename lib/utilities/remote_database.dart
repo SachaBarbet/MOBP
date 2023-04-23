@@ -18,8 +18,7 @@ class RemoteDatabase {
   static Future<bool> isUserInDb(String userLogin, String password) async {
     var querySnapshot = await db.collection('Users').where('login', isEqualTo: userLogin).get();
     if(querySnapshot.docs.isEmpty) return false;
-    if(password == querySnapshot.docs[0]['password'] as String) return true;
-    return false;
+    return (password == querySnapshot.docs[0]['password'] as String);
   }
 
   static userConnection() {

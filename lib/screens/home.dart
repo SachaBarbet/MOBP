@@ -3,7 +3,7 @@ import 'package:mobp/screens/add_proccess.dart';
 import 'package:mobp/utilities/locale_database.dart';
 
 import 'account.dart';
-import 'login.dart';
+import 'auth.dart';
 
 
 class Home extends StatefulWidget {
@@ -39,7 +39,7 @@ class _Home extends State<Home> {
       home: Scaffold(
         backgroundColor: const Color(0xFF3D3B3C),
         body: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(10),
           child: ListView(
             children: [
               Text(state),
@@ -64,41 +64,23 @@ class _Home extends State<Home> {
           color: const Color(0xFF262525),
           child: Row(
             mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.only(left: 15, right: 10),
-                child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Padding(
-                          padding: const EdgeInsets.only(left: 10, right: 10),
-                          child: IconButton(icon: const Icon(Icons.dashboard, color: Colors.white,), onPressed: (){},)
-                      ),
-                    ]
-                ),
+                padding: const EdgeInsets.only(left: 15, right: 15),
+                child: IconButton(icon: const Icon(Icons.dashboard, color: Colors.white,), onPressed: (){},),
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 10, right: 15),
-                child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: IconButton(icon: const Icon(Icons.account_circle, color: Colors.white,), onPressed: () {
-                          if (LocaleDatabase.connected) {
-                            Navigator.push(context, MaterialPageRoute(
-                                builder: (context) => const Account()));
-                          } else {
-                            Navigator.push(context, MaterialPageRoute(
-                                builder: (context) => const Login()));
-                          }
-                        },),
-                      ),
-                    ]
-                ),
+                padding: const EdgeInsets.only(left: 15, right: 15),
+                child: IconButton(icon: const Icon(Icons.account_circle, color: Colors.white,), onPressed: () {
+                  if (LocaleDatabase.connected) {
+                    Navigator.push(context, MaterialPageRoute(
+                        builder: (context) => const Account()));
+                  } else {
+                    Navigator.push(context, MaterialPageRoute(
+                        builder: (context) => const Login()));
+                  }
+                },),
               ),
             ],
           ),
