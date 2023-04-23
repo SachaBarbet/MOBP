@@ -1,45 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:mobp/utilities/authentication.dart';
 
 class Account extends StatefulWidget {
-  Account({super.key, required this.connected});
-  bool connected;
-
-  String
+  const Account({super.key});
 
   @override
   State<StatefulWidget> createState() => _Account();
 }
 
 class _Account extends State<Account> {
+
+  void leaveAccountPage() {
+    Navigator.pop(context);
+  }
+
   @override
   Widget build(BuildContext context) {
-
-    MaterialApp output = MaterialApp(
+    return MaterialApp(
       home: Scaffold(
-        body: Center(
-          child: Column(
-            children: [
-              Text(data)
-            ],
-          ),
-        ),
-      ),
-    );
-    if (!widget.connected) {
-      output = MaterialApp(
-        home: Scaffold(
-          body: Center(
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Center(
             child: Column(
               children: [
-                Container(),
+                TextButton(onPressed: () async {await UserAuthentication.signOut(); leaveAccountPage();}, child: const Text('Sign out'))
               ],
             ),
           ),
         ),
-      );
-    }
-
-    return output;
+      ),
+    );
   }
-
 }

@@ -14,18 +14,13 @@ Future<void> main() async {
   await RemoteDatabase.initData();
   await UserAuthentication.initAuth();
   await LocaleDatabase.setUser();
-  if (User.login.isNotEmpty) {
-    await UserAuthentication.signIn(User.login, User.password);
-  }
-
-  final currentUser = UserAuthentication.auth.currentUser;
-  if (currentUser != null) {
-    User.id = currentUser.uid;
-    LocaleDatabase.connected = true;
+  if (AppUser.login.isNotEmpty) {
+    await UserAuthentication.signIn(AppUser.login, AppUser.password);
   }
 
   runApp(const MyApp());
 }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -38,3 +33,4 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+

@@ -1,4 +1,4 @@
-class User {
+class AppUser {
   static String id = '';
   static String name = '';
   static String lastname = '';

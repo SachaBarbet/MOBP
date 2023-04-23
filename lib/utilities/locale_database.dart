@@ -18,7 +18,7 @@ class LocaleDatabase {
     onCreate(Database db, int version) async {
       // Database is created, create the table
       await db.execute(
-          "CREATE TABLE UserData (settingID TEXT PRIMARY KEY, value TEXT)");
+          "CREATE TABLE UserData (dataID TEXT PRIMARY KEY, value TEXT)");
       await db.execute(
           "CREATE TABLE Process (processID INTEGER PRIMARY KEY, value TEXT)");
       await db.execute(
@@ -43,15 +43,12 @@ class LocaleDatabase {
     db = await openDatabase(path,
         version: 1,
         onCreate: onCreate);
-
-    db.update("UserData", {"value": "sacha.barbet@gmail.com"}, where: 'dataID = ?', whereArgs: ['login']);
-    db.update("UserData", {"value": "unmotdepasse"}, where: 'dataID = ?', whereArgs: ['password']);
   }
 
   static Future<void> setUser() async {
     String login = await db.query('UserData', where: 'dataID = ?', whereArgs: ['login']).then((value) => value[0]['value'] as String);
     String password = await db.query('UserData', where: 'dataID = ?', whereArgs: ['password']).then((value) => value[0]['value'] as String);
-    User.login = login; User.password= password;
+    AppUser.login = login; AppUser.password= password;
   }
 
   static Future<void> insert(String table, Map<String, dynamic> values) async {

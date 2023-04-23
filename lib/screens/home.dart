@@ -14,38 +14,45 @@ class Home extends StatefulWidget {
 }
 
 class _Home extends State<Home> {
-
-  void loadAccountScreen(context) {
-    Navigator.push(context, MaterialPageRoute(
-        builder: (context) => const Login()));
-  }
+  String state = LocaleDatabase.connected.toString();
 
   @override
   void initState() {
     super.initState();
     if (!LocaleDatabase.connected) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => loadAccountScreen(context));
+      WidgetsBinding.instance.addPostFrameCallback((_) =>
+          Navigator.push(context, MaterialPageRoute(
+              builder: (context) => const Login())));
     }
+  }
+
+  void reloadDate() {
+    setState(() {
+      state = LocaleDatabase.connected.toString();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-
     return MaterialApp(
-      title: 'Home Page',
+      title: 'MOBP',
       home: Scaffold(
         backgroundColor: const Color(0xFF3D3B3C),
-        body: ListView(
-          children: const [
-            Text('loaded'),
-          ],
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ListView(
+            children: [
+              Text(state),
+            ],
+          ),
         ),
 
         floatingActionButton: FloatingActionButton(
           backgroundColor: const Color(0xFFEAC435),
           onPressed: () {
-            Navigator.push(context, MaterialPageRoute(
-                builder: (context) => const AddProcess()));
+            reloadDate();
+            /*Navigator.push(context, MaterialPageRoute(
+                builder: (context) => const AddProcess()));*/
           },
           child: const Icon(Icons.add),
         ),
@@ -63,7 +70,7 @@ class _Home extends State<Home> {
                 padding: const EdgeInsets.only(left: 15, right: 10),
                 child: Row(
                     mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Padding(
                           padding: const EdgeInsets.only(left: 10, right: 10),
@@ -76,13 +83,18 @@ class _Home extends State<Home> {
                 padding: const EdgeInsets.only(left: 10, right: 15),
                 child: Row(
                     mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Padding(
                         padding: const EdgeInsets.only(left: 10, right: 10),
                         child: IconButton(icon: const Icon(Icons.account_circle, color: Colors.white,), onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(
-                              builder: (context) => Account(connected: widget.connected)));
+                          if (LocaleDatabase.connected) {
+                            Navigator.push(context, MaterialPageRoute(
+                                builder: (context) => const Account()));
+                          } else {
+                            Navigator.push(context, MaterialPageRoute(
+                                builder: (context) => const Login()));
+                          }
                         },),
                       ),
                     ]
@@ -94,5 +106,4 @@ class _Home extends State<Home> {
       ),
     );
   }
-
 }
