@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mobp/utilities/authentication.dart';
 
+import '../models/user.dart';
+
 class Account extends StatefulWidget {
   const Account({super.key});
 
@@ -19,10 +21,13 @@ class _Account extends State<Account> {
     return MaterialApp(
       home: Scaffold(
         body: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(10),
           child: Center(
             child: Column(
               children: [
+                Text(AppUser.name),
+                Text(AppUser.id),
+                TextButton(onPressed: () async {await UserAuthentication.signOut(); leaveAccountPage();}, child: const Text('Update')),
                 TextButton(onPressed: () async {await UserAuthentication.signOut(); leaveAccountPage();}, child: const Text('Sign out'))
               ],
             ),

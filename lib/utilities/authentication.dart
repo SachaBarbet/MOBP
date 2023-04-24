@@ -26,16 +26,25 @@ class UserAuthentication {
         await auth.signInWithEmailAndPassword(email: email, password: password);
         LocaleDatabase.db.update("UserData", {"value": email}, where: 'dataID = ?', whereArgs: ['login']);
         LocaleDatabase.db.update("UserData", {"value": password}, where: 'dataID = ?', whereArgs: ['password']);
+        AppUser.name = auth.currentUser!.displayName!;
+        AppUser.id = auth.currentUser!.uid;
         return true;
-      } catch(e) {}
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'user-not-found') {
+          print('No user found for that email.');
+        } else if (e.code == 'wrong-password') {
+          print('Wrong password provided for that user.');
+        }
+      }
     }
     return false;
   }
 
-  static Future<bool> signUp(String email, String password) async {
+  static Future<bool> signUp(String email, String password, String name) async {
     if(auth.currentUser == null){
       try {
         await auth.createUserWithEmailAndPassword(email: email, password: password);
+        await auth.currentUser?.updateDisplayName(name);
         return true;
       } catch(e) {}
     }

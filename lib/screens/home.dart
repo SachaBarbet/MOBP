@@ -15,6 +15,7 @@ class Home extends StatefulWidget {
 
 class _Home extends State<Home> {
   String state = LocaleDatabase.connected.toString();
+  late List<Widget> widgetList;
 
   @override
   void initState() {
@@ -24,9 +25,10 @@ class _Home extends State<Home> {
           Navigator.push(context, MaterialPageRoute(
               builder: (context) => const Login())));
     }
+    reloadData();
   }
 
-  void reloadDate() {
+  void reloadData() {
     setState(() {
       state = LocaleDatabase.connected.toString();
     });
@@ -41,18 +43,16 @@ class _Home extends State<Home> {
         body: Padding(
           padding: const EdgeInsets.all(10),
           child: ListView(
-            children: [
-              Text(state),
-            ],
+            children: widgetList,
           ),
         ),
 
         floatingActionButton: FloatingActionButton(
           backgroundColor: const Color(0xFFEAC435),
           onPressed: () {
-            reloadDate();
-            /*Navigator.push(context, MaterialPageRoute(
-                builder: (context) => const AddProcess()));*/
+            reloadData();
+            Navigator.push(context, MaterialPageRoute(
+                builder: (context) => const AddProcess()));
           },
           child: const Icon(Icons.add),
         ),

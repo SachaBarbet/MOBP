@@ -7,7 +7,7 @@ class SignUp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    late String email, password;
+    late String email, password, name;
     final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
     void leaveRegisterPage() {
@@ -18,7 +18,7 @@ class SignUp extends StatelessWidget {
       FormState? formState = formKey.currentState!;
       if(formState.validate()) {
         formState.save();
-        bool tryRegister = await UserAuthentication.signUp(email, password);
+        bool tryRegister = await UserAuthentication.signUp(email, password, name);
         if(tryRegister) leaveRegisterPage();
       }
     }
@@ -37,6 +37,18 @@ class SignUp extends StatelessWidget {
                 const Padding(
                   padding: EdgeInsets.only(bottom: 30),
                   child: Text('Register', style: TextStyle(color: Colors.white, fontSize: 36)),
+                ),
+                TextFormField(
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please type your name';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) => name = value!,
+                  decoration: const InputDecoration(
+                    labelText: 'Name',
+                  ),
                 ),
                 TextFormField(
                   validator: (value) {
