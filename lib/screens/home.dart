@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:mobp/screens/add_proccess.dart';
+import 'package:mobp/screens/add_process.dart';
 import 'package:mobp/utilities/locale_database.dart';
+import 'package:mobp/utilities/remote_database.dart';
+import 'package:mobp/widgets/process_widget.dart';
 
+import '../widgets/folder_widget.dart';
 import 'account.dart';
 import 'auth.dart';
 
@@ -15,22 +18,30 @@ class Home extends StatefulWidget {
 
 class _Home extends State<Home> {
   String state = LocaleDatabase.connected.toString();
-  late List<Widget> widgetList;
+  late Future<List<Widget>> widgetList;
+  late Future<List<Widget>> folderList;
+
+  void editProcess() {
+
+  }
 
   @override
   void initState() {
     super.initState();
+    // Permet de se d'afficher la page de connection au lancement si non connecté
     if (!LocaleDatabase.connected) {
       WidgetsBinding.instance.addPostFrameCallback((_) =>
           Navigator.push(context, MaterialPageRoute(
               builder: (context) => const Login())));
     }
-    reloadData();
+    widgetList = ProcessWidget.getProcessWidgets(context);
+    folderList = FolderWidget.getFolderWidgets(context);
   }
-
+  
   void reloadData() {
     setState(() {
-      state = LocaleDatabase.connected.toString();
+      folderList = FolderWidget.getFolderWidgets(context);
+      widgetList = ProcessWidget.getProcessWidgets(context);
     });
   }
 
@@ -38,19 +49,47 @@ class _Home extends State<Home> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'MOBP',
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         backgroundColor: const Color(0xFF3D3B3C),
         body: Padding(
           padding: const EdgeInsets.all(10),
-          child: ListView(
-            children: widgetList,
-          ),
+          child: FutureBuilder<List<Widget>>(
+            future: widgetList,
+            builder: (context, snapshot) {
+              List<Widget> children;
+              if(snapshot.hasData) {
+                children = snapshot.data!;
+              } else if (snapshot.hasError) {
+                children = [
+                  Text('Result : ${snapshot.error}')
+                ];
+              } else {
+                children = const <Widget>[
+                  SizedBox(
+                    width: 60,
+                    height: 60,
+                    child: CircularProgressIndicator(color: Color(0xFFEAC435)),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 16),
+                    child: Text('Awaiting result...'),
+                  ),
+                ];
+              }
+              return Center(
+                child: ListView.builder(
+                  itemCount: children.length,
+                  itemBuilder: (ctxt/*context*/, ind) {return children[ind];},
+                ),
+              );
+            },
+          )
         ),
 
         floatingActionButton: FloatingActionButton(
           backgroundColor: const Color(0xFFEAC435),
           onPressed: () {
-            reloadData();
             Navigator.push(context, MaterialPageRoute(
                 builder: (context) => const AddProcess()));
           },
@@ -60,18 +99,20 @@ class _Home extends State<Home> {
 
         bottomNavigationBar: BottomAppBar(
           shape: const CircularNotchedRectangle(),
-          notchMargin: 5,
+          notchMargin: 8,
           color: const Color(0xFF262525),
           child: Row(
             mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.only(left: 15, right: 15),
-                child: IconButton(icon: const Icon(Icons.dashboard, color: Colors.white,), onPressed: (){},),
+                padding: const EdgeInsets.only(left: 30, right: 30),
+                child: IconButton(icon: const Icon(Icons.refresh, color: Colors.white,), onPressed: (){
+                  reloadData();
+                },),
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 15, right: 15),
+                padding: const EdgeInsets.only(left: 30, right: 30),
                 child: IconButton(icon: const Icon(Icons.account_circle, color: Colors.white,), onPressed: () {
                   if (LocaleDatabase.connected) {
                     Navigator.push(context, MaterialPageRoute(

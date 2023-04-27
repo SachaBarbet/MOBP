@@ -1,45 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:mobp/models/folder.dart';
 
 import '../models/process.dart';
 import '../models/user.dart';
 import '../utilities/remote_database.dart';
 
-class ProcessWidget {
-  final AppProcess process;
+class FolderWidget {
+  final AppFolder folder;
 
-  ProcessWidget({required this.process});
+  FolderWidget({required this.folder});
 
-  void deleteProcess(BuildContext context, String processID) async {
-    switch (await showDialog<bool>(
-        context: context,
-        builder: (BuildContext builderContext) {
-          return SimpleDialog(
-            title: const Text('Confirm to delete this process'),
-            children: [
-              SimpleDialogOption(
-                onPressed: () {Navigator.pop(context, true);},
-                child: const Text('DELETE'),
-              ),
-              SimpleDialogOption(
-                onPressed: () {Navigator.pop(context, false);},
-                child: const Text('CANCEL'),
-              )
-            ],
-          );
-        }
-    )) {
-      case true:
-        await RemoteDatabase.db.collection('Process').doc(AppUser.id).collection('ListProcess').doc(processID).delete();
-        break;
-      default:
-        break;
-    }
-  }
-
-  Future<void> editProcess() async {}
-  Future<void> screenProcess() async {}
-
-  Widget getWidget(context) {
+  Widget getWidget() {
     return Container(
       decoration: const BoxDecoration(color: Color(0xFF262525), borderRadius: BorderRadius.all(Radius.circular(5))),
       margin: const EdgeInsets.only(bottom: 18),
@@ -59,13 +30,13 @@ class ProcessWidget {
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(bottom: 10),
-                    child: Text(process.name, style: const TextStyle(color: Colors.white, fontSize: 18, overflow: TextOverflow.ellipsis),),
+                    child: Text(folder.name, style: const TextStyle(color: Colors.white, fontSize: 18, overflow: TextOverflow.ellipsis),),
                   ),
                   Expanded(
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.vertical,
-                      child: Text(process.description, style: const TextStyle(color: Colors.white),)
-                    )
+                      child: SingleChildScrollView(
+                          scrollDirection: Axis.vertical,
+                          child: Text(folder.description, style: const TextStyle(color: Colors.white),)
+                      )
                   )
                 ],
               ),
@@ -86,7 +57,7 @@ class ProcessWidget {
                 borderRadius: const BorderRadius.only(bottomRight: Radius.circular(5)),
                 color: Colors.transparent,
                 child: IconButton(
-                    onPressed: deleteProcess(context, ),
+                    onPressed: delete,
                     icon: const Icon(Icons.delete, color: Colors.white,)
                 ),
               )
@@ -97,16 +68,16 @@ class ProcessWidget {
     );
   }
 
-  static Future<List<Widget>> getProcessWidgets(context) async {
-    List<Widget> widgetsProcess = [];
+  static Future<List<Widget>> getFolderWidgets() async {
+    List<Widget> widgetsFolder = [];
     if (AppUser.id.isNotEmpty) {
-      List<AppProcess> userAllProcess = await RemoteDatabase.getAllProcess(AppUser.id);
-      for (var element in userAllProcess) {
-        widgetsProcess.add(ProcessWidget(process: element).getWidget(context));
+      List<AppFolder> userAllFolders = await RemoteDatabase.getAllFolders(AppUser.id);
+      for (var element in userAllFolders) {
+        widgetsFolder.add(FolderWidget(folder: element).getWidget());
       }
     }
 
-    if (widgetsProcess.isEmpty) widgetsProcess.add(const Text('No process'));
-    return widgetsProcess;
+    if (widgetsFolder.isEmpty) widgetsFolder.add(const Text('No folder'));
+    return widgetsFolder;
   }
 }

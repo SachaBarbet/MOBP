@@ -16,16 +16,12 @@ class LocaleDatabase {
 
     // Ouverture de la db pour la première fois
     onCreate(Database db, int version) async {
-      // Database is created, create the table
+      // Database is created, create the tables and default data
       await db.execute(
           "CREATE TABLE UserData (dataID TEXT PRIMARY KEY, value TEXT)");
-      await db.execute(
-          "CREATE TABLE Process (processID INTEGER PRIMARY KEY, value TEXT)");
-      await db.execute(
-          "CREATE TABLE Folder (folderID INTEGER PRIMARY KEY, value TEXT)");
       // Insert default settings
       await db.execute(
-          "INSERT INTO UserData (dataID, value) VALUES ('distantDbVersion', '0')");
+          "INSERT INTO UserData (dataID, value) VALUES ('remoteDbVersion', '0')");
       await db.execute(
           "INSERT INTO UserData (dataID, value) VALUES ('localDbVersion', '0')");
       await db.execute(
@@ -81,17 +77,5 @@ class LocaleDatabase {
         break;
     }
     return result;
-  }
-
-  static Future<void> update() async {
-
-  }
-
-  static Future<void> delete() async {
-
-  }
-
-  static syncFromRemote() {
-
   }
 }

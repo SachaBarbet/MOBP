@@ -22,6 +22,7 @@ class SignIn extends StatelessWidget {
         if (tryLogin) leaveLoginPage();
       }
     }
+
     return Scaffold(
       backgroundColor: const Color(0xFF262525),
       body: Center(
