@@ -3,7 +3,6 @@ import 'package:mobp/models/user.dart';
 import 'package:mobp/utilities/remote_database.dart';
 import 'package:mobp/widgets/dropdown_widget.dart';
 
-import '../models/folder.dart';
 
 class AddProcess extends StatefulWidget {
   const AddProcess({super.key});
@@ -13,7 +12,7 @@ class AddProcess extends StatefulWidget {
 }
 
 class _AddProcess extends State<AddProcess> {
-  Future<List<Widget>> folders = DropdownWidget.getDropDownWidgets();
+  Future<List<DropdownMenuItem<String>>> folders = DropdownWidget.getDropDownWidgets();
   String dropdownValue = "";
 
   @override
@@ -29,7 +28,7 @@ class _AddProcess extends State<AddProcess> {
 
   @override
   Widget build(BuildContext context) {
-    late String name, description, folderID;
+    late String name, description;
     final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
     void leavePage() {
@@ -82,41 +81,31 @@ class _AddProcess extends State<AddProcess> {
                   TextFormField(
                     onSaved: (value) => description = value!,
                     decoration: const InputDecoration(
-                      labelText: 'description',
+                      labelText: 'Description',
                     ),
                   ),
-                  FutureBuilder<List<Widget>>(
+                  FutureBuilder<List<DropdownMenuItem<String>>>(
                     future: folders,
                     initialData: [DropdownWidget(id: '', name: 'No folder found').getWidget()],
                     builder: (context, snapshot) {
-                      List<Widget> children;
+                      List<DropdownMenuItem<String>> children;
                       if(snapshot.hasData) {
                         children = snapshot.data!;
                       } else if (snapshot.hasError) {
                         children = [
-                          Text('Result : ${snapshot.error}')
+                          DropdownWidget(id: '', name: 'Result : ${snapshot.error}').getWidget()
                         ];
                       } else {
-                        children = const <Widget>[
-                          SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(color: Color(0xFFEAC435)),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(top: 4),
-                            child: Text('Awaiting result...'),
-                          ),
+                        children = [
+                          DropdownWidget(id: '', name: 'Awaiting result...').getWidget()
                         ];
                       }
                       return Center(
                         child: DropdownButtonFormField(
                           value: dropdownValue,
-                          items: children as List<DropdownMenuItem<String>>,
+                          items: children,
                           onChanged: (String? value) {
-                            setState(() {
-                              dropdownValue = value!;
-                            });
+                            dropdownValue = value!;
                           },
                         ),
                       );

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:mobp/screens/update_process.dart';
 
 import '../models/process.dart';
 import '../models/user.dart';
+import '../screens/process.dart';
 import '../utilities/remote_database.dart';
 
 class ProcessWidget {
@@ -9,20 +11,25 @@ class ProcessWidget {
 
   ProcessWidget({required this.process});
 
-  void deleteProcess(BuildContext context, String processID) async {
+  Future<void> deleteProcess(BuildContext context, String processID) async {
     switch (await showDialog<bool>(
         context: context,
         builder: (BuildContext builderContext) {
           return SimpleDialog(
-            title: const Text('Confirm to delete this process'),
+            title: const Text('Click on DELETE to confirm the suppression of this process', style: TextStyle(fontSize: 16),),
             children: [
-              SimpleDialogOption(
-                onPressed: () {Navigator.pop(context, true);},
-                child: const Text('DELETE'),
-              ),
-              SimpleDialogOption(
-                onPressed: () {Navigator.pop(context, false);},
-                child: const Text('CANCEL'),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  SimpleDialogOption(
+                    onPressed: () {Navigator.pop(context, true);},
+                    child: const Text('DELETE', style: TextStyle(color: Colors.red),),
+                  ),
+                  SimpleDialogOption(
+                    onPressed: () {Navigator.pop(context, false);},
+                    child: const Text('CANCEL'),
+                  )
+                ],
               )
             ],
           );
@@ -36,8 +43,15 @@ class ProcessWidget {
     }
   }
 
-  Future<void> editProcess() async {}
-  Future<void> screenProcess() async {}
+  Future<void> editProcess(context) async {
+    Navigator.push(context, MaterialPageRoute(
+        builder: (context) => UpdateProcess(process: process)));
+  }
+
+  Future<void> screenProcess(context) async {
+    Navigator.push(context, MaterialPageRoute(
+        builder: (context) => ProcessScreen(process: process)));
+  }
 
   Widget getWidget(context) {
     return Container(
@@ -46,28 +60,32 @@ class ProcessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.max,
         children: [
-          InkWell(
-            onTap: visual,
-            child: Container(
-              decoration: const BoxDecoration(border: Border(right: BorderSide(style: BorderStyle.solid, color: Colors.white24, width: 1))),
-              padding: const EdgeInsets.all(10),
-              width: 292,
-              height: 95,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: Text(process.name, style: const TextStyle(color: Colors.white, fontSize: 18, overflow: TextOverflow.ellipsis),),
-                  ),
-                  Expanded(
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.vertical,
-                      child: Text(process.description, style: const TextStyle(color: Colors.white),)
+          Material(
+            borderRadius: const BorderRadius.only(topLeft: Radius.circular(5), bottomLeft: Radius.circular(5)),
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () {screenProcess(context);},
+              child: Container(
+                decoration: const BoxDecoration(border: Border(right: BorderSide(style: BorderStyle.solid, color: Colors.white24, width: 1))),
+                padding: const EdgeInsets.all(10),
+                width: 292,
+                height: 95,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: Text(process.name, style: const TextStyle(color: Colors.white, fontSize: 18, overflow: TextOverflow.ellipsis),),
+                    ),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.vertical,
+                        child: Text(process.description, style: const TextStyle(color: Colors.white),)
+                      )
                     )
-                  )
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -78,7 +96,7 @@ class ProcessWidget {
                 borderRadius: const BorderRadius.only(topRight: Radius.circular(5)),
                 color: Colors.transparent,
                 child: IconButton(
-                    onPressed: edit,
+                    onPressed: () {editProcess(context);},
                     icon: const Icon(Icons.edit, color: Colors.white,)
                 ),
               ),
@@ -86,7 +104,7 @@ class ProcessWidget {
                 borderRadius: const BorderRadius.only(bottomRight: Radius.circular(5)),
                 color: Colors.transparent,
                 child: IconButton(
-                    onPressed: deleteProcess(context, ),
+                    onPressed: () {deleteProcess(context, process.id);},
                     icon: const Icon(Icons.delete, color: Colors.white,)
                 ),
               )
@@ -106,7 +124,7 @@ class ProcessWidget {
       }
     }
 
-    if (widgetsProcess.isEmpty) widgetsProcess.add(const Text('No process'));
+    if (widgetsProcess.isEmpty) {widgetsProcess.add(const Text('No process'));}
     return widgetsProcess;
   }
 }

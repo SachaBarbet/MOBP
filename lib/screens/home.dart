@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobp/screens/add_process.dart';
 import 'package:mobp/utilities/locale_database.dart';
-import 'package:mobp/utilities/remote_database.dart';
 import 'package:mobp/widgets/process_widget.dart';
 
 import '../widgets/folder_widget.dart';
@@ -21,10 +20,6 @@ class _Home extends State<Home> {
   late Future<List<Widget>> widgetList;
   late Future<List<Widget>> folderList;
 
-  void editProcess() {
-
-  }
-
   @override
   void initState() {
     super.initState();
@@ -32,7 +27,7 @@ class _Home extends State<Home> {
     if (!LocaleDatabase.connected) {
       WidgetsBinding.instance.addPostFrameCallback((_) =>
           Navigator.push(context, MaterialPageRoute(
-              builder: (context) => const Login())));
+              builder: (context) => const Auth())));
     }
     widgetList = ProcessWidget.getProcessWidgets(context);
     folderList = FolderWidget.getFolderWidgets(context);
@@ -106,20 +101,20 @@ class _Home extends State<Home> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.only(left: 30, right: 30),
+                padding: const EdgeInsets.only(left: 48),
                 child: IconButton(icon: const Icon(Icons.refresh, color: Colors.white,), onPressed: (){
                   reloadData();
                 },),
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 30, right: 30),
+                padding: const EdgeInsets.only(right: 48),
                 child: IconButton(icon: const Icon(Icons.account_circle, color: Colors.white,), onPressed: () {
                   if (LocaleDatabase.connected) {
                     Navigator.push(context, MaterialPageRoute(
                         builder: (context) => const Account()));
                   } else {
                     Navigator.push(context, MaterialPageRoute(
-                        builder: (context) => const Login()));
+                        builder: (context) => const Auth()));
                   }
                 },),
               ),

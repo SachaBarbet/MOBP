@@ -1,4 +1,3 @@
-import 'package:mobp/models/user_data.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'dart:io';
@@ -21,13 +20,10 @@ class LocaleDatabase {
           "CREATE TABLE UserData (dataID TEXT PRIMARY KEY, value TEXT)");
       // Insert default settings
       await db.execute(
-          "INSERT INTO UserData (dataID, value) VALUES ('remoteDbVersion', '0')");
-      await db.execute(
-          "INSERT INTO UserData (dataID, value) VALUES ('localDbVersion', '0')");
-      await db.execute(
           "INSERT INTO UserData (dataID, value) VALUES ('login', '')");
       await db.execute(
           "INSERT INTO UserData (dataID, value) VALUES ('password', '')");
+      // pas utilisé pour le moment
       await db.execute(
           "INSERT INTO UserData (dataID, value) VALUES ('keepLogin', '0')");
     }
@@ -49,33 +45,5 @@ class LocaleDatabase {
 
   static Future<void> insert(String table, Map<String, dynamic> values) async {
     await db.insert(table, values, conflictAlgorithm: ConflictAlgorithm.replace,);
-  }
-
-  static Future<Map<String, Object>> getTableData(String table, {Map<String, dynamic> filter = const {}}) async {
-    String whereStr = '';
-    List whereArgs = <dynamic>[];
-    int count = 1;
-    if (filter.isNotEmpty) {filter.forEach((key, value) {
-      whereArgs.add(value);
-      whereStr += "$key = ?";});
-      if (filter.length != count) {whereStr += ", ";}
-      count++;
-    }
-
-    List<Map<String, dynamic>> maps = await db.query(
-      table,
-      where: whereStr,
-      whereArgs: whereArgs,
-    );
-
-    Map<String, Object> result = {};
-    switch (table) {
-      case 'UserData':
-        for (var element in maps) {
-          result[element['dataID']] = Setting(settingID: element['dataID'], value: element['value']);
-        }
-        break;
-    }
-    return result;
   }
 }

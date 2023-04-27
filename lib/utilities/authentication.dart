@@ -26,7 +26,9 @@ class UserAuthentication {
         await auth.signInWithEmailAndPassword(email: email, password: password);
         LocaleDatabase.db.update("UserData", {"value": email}, where: 'dataID = ?', whereArgs: ['login']);
         LocaleDatabase.db.update("UserData", {"value": password}, where: 'dataID = ?', whereArgs: ['password']);
-        AppUser.name = auth.currentUser!.displayName!;
+        if (auth.currentUser!.displayName != null) {
+          AppUser.name = auth.currentUser!.displayName!;
+        }
         AppUser.id = auth.currentUser!.uid;
         return true;
       } on FirebaseAuthException catch (e) {

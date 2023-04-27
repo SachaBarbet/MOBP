@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../models/user.dart';
+import '../utilities/remote_database.dart';
+
 class AddFolder extends StatelessWidget {
   const AddFolder({super.key});
 
@@ -13,7 +16,15 @@ class AddFolder extends StatelessWidget {
     }
 
     Future<void> addFolder() async {
-
+      FormState? formState = formKey.currentState!;
+      if(formState.validate()) {
+        formState.save();
+        await RemoteDatabase.db.collection('Folders')
+            .doc(AppUser.id)
+            .collection('ListFolders')
+            .add({"name": name, "description": description});
+        leavePage();
+      }
     }
 
     return MaterialApp(
@@ -60,7 +71,7 @@ class AddFolder extends StatelessWidget {
                         onPressed: () async {
                           await addFolder();
                         },
-                        child: const Text('Sign In', style: TextStyle(color: Color(0xFFEAC435), fontSize: 20),)
+                        child: const Text('ADD', style: TextStyle(color: Color(0xFFEAC435), fontSize: 20),)
                     ),
                   )
                 ],

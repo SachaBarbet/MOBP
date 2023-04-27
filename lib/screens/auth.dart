@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:mobp/screens/signin.dart';
 import 'package:mobp/screens/signup.dart';
+import 'package:mobp/utilities/locale_database.dart';
 
-class Login extends StatelessWidget {
-  const Login({super.key});
+import '../models/user.dart';
+
+class Auth extends StatelessWidget {
+  const Auth({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -52,5 +55,4 @@ class Login extends StatelessWidget {
       ),
     );
   }
-
 }

@@ -19,7 +19,7 @@ class SignIn extends StatelessWidget {
       if(formState.validate()) {
         formState.save();
         bool tryLogin = await UserAuthentication.signIn(email, password);
-        if (tryLogin) leaveLoginPage();
+        if (tryLogin == true) {leaveLoginPage();}
       }
     }
 

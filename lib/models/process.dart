@@ -1,7 +1,3 @@
-import 'package:flutter/material.dart';
-import 'package:mobp/models/user.dart';
-
-import '../utilities/remote_database.dart';
 import 'component.dart';
 
 class AppProcess {
@@ -11,5 +7,5 @@ class AppProcess {
   late String folderID;
   late List<ProcessComponent> components;
 
-  AppProcess({required String id, required this.name, required this.description, required this.folderID});
+  AppProcess({required this.id, required this.name, required this.description, required this.folderID});
 }
