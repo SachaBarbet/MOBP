@@ -18,7 +18,12 @@ class Home extends StatefulWidget {
 class _Home extends State<Home> {
   String state = LocaleDatabase.connected.toString();
   late Future<List<Widget>> widgetList;
-  late Future<List<Widget>> folderList;
+
+  Future<List<Widget>> getAllWidgets(context) async {
+    List<Widget> allWidgets = await FolderWidget.getFolderWidgets(context);
+    allWidgets.addAll(await ProcessWidget.getProcessWidgets(context));
+    return allWidgets;
+  }
 
   @override
   void initState() {
@@ -29,14 +34,12 @@ class _Home extends State<Home> {
           Navigator.push(context, MaterialPageRoute(
               builder: (context) => const Auth())));
     }
-    widgetList = ProcessWidget.getProcessWidgets(context);
-    folderList = FolderWidget.getFolderWidgets(context);
+    widgetList = getAllWidgets(context);
   }
   
   void reloadData() {
     setState(() {
-      folderList = FolderWidget.getFolderWidgets(context);
-      widgetList = ProcessWidget.getProcessWidgets(context);
+      widgetList = getAllWidgets(context);
     });
   }
 

@@ -21,6 +21,7 @@ class _Account extends State<Account> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
+        backgroundColor: const Color(0xFF262525),
         body: Padding(
           padding: const EdgeInsets.all(10),
           child: Center(

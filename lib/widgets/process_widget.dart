@@ -36,7 +36,8 @@ class ProcessWidget {
         }
     )) {
       case true:
-        await RemoteDatabase.db.collection('Process').doc(AppUser.id).collection('ListProcess').doc(processID).delete();
+        await RemoteDatabase.getUserData().collection('ListProcess')
+            .doc(processID).delete();
         break;
       default:
         break;
@@ -60,6 +61,12 @@ class ProcessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.max,
         children: [
+          Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.only(left: 8, right: 8, top: 36, bottom: 36),
+            decoration: const BoxDecoration(border: Border(right: BorderSide(style: BorderStyle.solid, color: Colors.white24, width: 1))),
+            child: const Icon(Icons.file_open_rounded, color: Colors.white),
+          ),
           Material(
             borderRadius: const BorderRadius.only(topLeft: Radius.circular(5), bottomLeft: Radius.circular(5)),
             color: Colors.transparent,
@@ -68,7 +75,7 @@ class ProcessWidget {
               child: Container(
                 decoration: const BoxDecoration(border: Border(right: BorderSide(style: BorderStyle.solid, color: Colors.white24, width: 1))),
                 padding: const EdgeInsets.all(10),
-                width: 292,
+                width: 251,
                 height: 95,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -118,9 +125,11 @@ class ProcessWidget {
   static Future<List<Widget>> getProcessWidgets(context) async {
     List<Widget> widgetsProcess = [];
     if (AppUser.id.isNotEmpty) {
-      List<AppProcess> userAllProcess = await RemoteDatabase.getAllProcess(AppUser.id);
+      List<AppProcess> userAllProcess = await RemoteDatabase.getAllProcess();
       for (var element in userAllProcess) {
-        widgetsProcess.add(ProcessWidget(process: element).getWidget(context));
+        if (element.folderID.isEmpty) {
+          widgetsProcess.add(ProcessWidget(process: element).getWidget(context));
+        }
       }
     }
 

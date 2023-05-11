@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mobp/models/user.dart';
 import 'package:mobp/utilities/remote_database.dart';
 import 'package:mobp/widgets/dropdown_widget.dart';
 
@@ -39,10 +38,11 @@ class _AddProcess extends State<AddProcess> {
       FormState? formState = formKey.currentState!;
       if(formState.validate()) {
         formState.save();
-        await RemoteDatabase.db.collection('Process')
-            .doc(AppUser.id)
-            .collection('ListProcess')
-            .add({"name": name, "description": description, "folderID": dropdownValue});
+        await RemoteDatabase.getUserData().collection('ListProcess').add({
+          "name": name,
+          "description": description,
+          "folderID": dropdownValue
+        });
         leavePage();
       }
     }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../models/user.dart';
 import '../utilities/remote_database.dart';
 
 class AddFolder extends StatelessWidget {
@@ -19,10 +18,10 @@ class AddFolder extends StatelessWidget {
       FormState? formState = formKey.currentState!;
       if(formState.validate()) {
         formState.save();
-        await RemoteDatabase.db.collection('Folders')
-            .doc(AppUser.id)
-            .collection('ListFolders')
-            .add({"name": name, "description": description});
+        await RemoteDatabase.getUserData().collection('ListFolders').add({
+          "name": name,
+          "description": description
+        });
         leavePage();
       }
     }

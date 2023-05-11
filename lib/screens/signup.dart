@@ -14,7 +14,7 @@ class SignUp extends StatelessWidget {
       Navigator.pop(context);
     }
 
-    Future<void> signIn() async {
+    Future<void> signUp() async {
       FormState? formState = formKey.currentState!;
       if(formState.validate()) {
         formState.save();
@@ -81,7 +81,7 @@ class SignUp extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: TextButton(
                       onPressed: () async {
-                        await signIn();
+                        await signUp();
                       },
                       child: const Text('Sign Up', style: TextStyle(color: Color(0xFFEAC435), fontSize: 20),)
                   ),

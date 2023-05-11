@@ -19,7 +19,7 @@ class DropdownWidget {
   static Future<List<DropdownMenuItem<String>>> getDropDownWidgets() async {
     List<DropdownMenuItem<String>> widgetsDropdown = [];
     if (AppUser.id.isNotEmpty) {
-      Map<String, String> foldersMap = await RemoteDatabase.getFoldersID(AppUser.id);
+      Map<String, String> foldersMap = await RemoteDatabase.getFoldersID();
       foldersMap.forEach((key, value) {
         widgetsDropdown.add(DropdownWidget(id: key, name: value).getWidget());
       });

@@ -48,7 +48,7 @@ class UserAuthentication {
         await auth.createUserWithEmailAndPassword(email: email, password: password);
         await auth.currentUser?.updateDisplayName(name);
         return true;
-      } catch(e) {}
+      } catch(e) {print(e);}
     }
     return false;
   }
