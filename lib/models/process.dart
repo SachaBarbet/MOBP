@@ -19,7 +19,7 @@ class AppProcess {
   Widget getWidget() {
     List<Widget> listWidget = [];
     for (var value in components) {
-      listWidget.add(value.getWidget());
+      listWidget.add(value.componentWidget);
     }
     return ListView(
       children: listWidget,
