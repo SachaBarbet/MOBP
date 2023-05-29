@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobp/screens/add_folder.dart';
 import 'package:mobp/screens/add_process.dart';
 import 'package:mobp/utilities/locale_database.dart';
 import 'package:mobp/widgets/process_widget.dart';
@@ -16,12 +17,22 @@ class Home extends StatefulWidget {
 }
 
 class _Home extends State<Home> {
-  String state = LocaleDatabase.connected.toString();
   late Future<List<Widget>> widgetList;
 
   Future<List<Widget>> getAllWidgets(context) async {
-    List<Widget> allWidgets = await FolderWidget.getFolderWidgets(context);
-    allWidgets.addAll(await ProcessWidget.getProcessWidgets(context));
+    List<Widget> allWidgets = [];
+    if (LocaleDatabase.connected) {
+      allWidgets.addAll(await FolderWidget.getFolderWidgets(context));
+      allWidgets.addAll(await ProcessWidget.getProcessWidgets(context));
+    } else {
+      allWidgets.add(const Center(
+        child: Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Text('You are not connected !', style: TextStyle(color: Color(0xFFAAAAAA)),),
+        ),
+      ));
+    }
+
     return allWidgets;
   }
 
@@ -105,21 +116,32 @@ class _Home extends State<Home> {
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.only(left: 48),
-                child: IconButton(icon: const Icon(Icons.refresh, color: Colors.white,), onPressed: (){
-                  reloadData();
+                child: IconButton(icon: const Icon(Icons.folder, color: Colors.white,), onPressed: (){
+                  Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => const AddFolder()));
                 },),
               ),
               Padding(
-                padding: const EdgeInsets.only(right: 48),
-                child: IconButton(icon: const Icon(Icons.account_circle, color: Colors.white,), onPressed: () {
-                  if (LocaleDatabase.connected) {
-                    Navigator.push(context, MaterialPageRoute(
-                        builder: (context) => const Account()));
-                  } else {
-                    Navigator.push(context, MaterialPageRoute(
-                        builder: (context) => const Auth()));
-                  }
-                },),
+                padding: const EdgeInsets.only(right: 32),
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                      child: IconButton(icon: const Icon(Icons.refresh, color: Colors.white,), onPressed: (){
+                        reloadData();
+                      },),
+                    ),
+                    IconButton(icon: const Icon(Icons.account_circle, color: Colors.white,), onPressed: () {
+                      if (LocaleDatabase.connected) {
+                        Navigator.push(context, MaterialPageRoute(
+                            builder: (context) => const Account()));
+                      } else {
+                        Navigator.push(context, MaterialPageRoute(
+                            builder: (context) => const Auth()));
+                      }
+                    },),
+                  ],
+                ),
               ),
             ],
           ),

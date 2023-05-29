@@ -4,7 +4,7 @@ class AppFolder {
   late String description;
 
   AppFolder({
-    required String id,
+    required this.id,
     required this.name,
     required this.description
   });

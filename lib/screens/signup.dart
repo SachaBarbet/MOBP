@@ -25,6 +25,14 @@ class SignUp extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: const Color(0xFF262525),
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: const Color(0xFF262525),
+        leading: BackButton(
+          color: Colors.white,
+          onPressed: leaveRegisterPage,
+        ),
+      ),
       body: Center(
         child: Form(
           key: formKey,
@@ -39,6 +47,7 @@ class SignUp extends StatelessWidget {
                   child: Text('Register', style: TextStyle(color: Colors.white, fontSize: 36)),
                 ),
                 TextFormField(
+                  style: const TextStyle(color: Colors.white),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please type your name';
@@ -48,9 +57,11 @@ class SignUp extends StatelessWidget {
                   onSaved: (value) => name = value!,
                   decoration: const InputDecoration(
                     labelText: 'Name',
+                    labelStyle: TextStyle(color: Color(0xFFAAAAAA)),
                   ),
                 ),
                 TextFormField(
+                  style: const TextStyle(color: Colors.white),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please type an email';
@@ -60,9 +71,11 @@ class SignUp extends StatelessWidget {
                   onSaved: (value) => email = value!,
                   decoration: const InputDecoration(
                     labelText: 'Email',
+                    labelStyle: TextStyle(color: Color(0xFFAAAAAA)),
                   ),
                 ),
                 TextFormField(
+                  style: const TextStyle(color: Colors.white),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please type a password';
@@ -74,6 +87,7 @@ class SignUp extends StatelessWidget {
                   onSaved: (value) => password = value!,
                   decoration: const InputDecoration(
                     labelText: 'password',
+                    labelStyle: TextStyle(color: Color(0xFFAAAAAA)),
                   ),
                   obscureText: true,
                 ),

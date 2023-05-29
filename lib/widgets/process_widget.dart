@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:mobp/screens/update_process.dart';
 
 import '../models/process.dart';
 import '../models/user.dart';
+import '../screens/edit_process.dart';
 import '../screens/process.dart';
 import '../utilities/remote_database.dart';
 
@@ -46,7 +46,7 @@ class ProcessWidget {
 
   Future<void> editProcess(context) async {
     Navigator.push(context, MaterialPageRoute(
-        builder: (context) => UpdateProcess(process: process)));
+        builder: (context) => EditProcess(process: process)));
   }
 
   Future<void> screenProcess(context) async {
@@ -133,7 +133,37 @@ class ProcessWidget {
       }
     }
 
-    if (widgetsProcess.isEmpty) {widgetsProcess.add(const Text('No process'));}
+    if (widgetsProcess.isEmpty) {
+      widgetsProcess.add(const Center(
+        child: Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Text('You don\'t have a process, you can create one with the + button.', style: TextStyle(color: Color(0xFFAAAAAA)),),
+        ),
+      ));
+    }
+    return widgetsProcess;
+  }
+
+  static Future<List<Widget>> getFolderProcessWidgets(context, folderID) async {
+    List<Widget> widgetsProcess = [];
+    if (AppUser.id.isNotEmpty) {
+      List<AppProcess> userAllProcess = await RemoteDatabase.getAllProcess();
+      for (var element in userAllProcess) {
+        if (element.folderID == folderID) {
+          widgetsProcess.add(ProcessWidget(process: element).getWidget(context));
+        }
+      }
+    }
+
+    if (widgetsProcess.isEmpty) {
+      widgetsProcess.add(const Center(
+        child: Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Text('There is no process here.', style: TextStyle(color: Color(0xFFAAAAAA)),),
+        ),
+      ));
+    }
     return widgetsProcess;
   }
 }
+

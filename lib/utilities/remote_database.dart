@@ -2,9 +2,11 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../models/component.dart';
 import '../models/folder.dart';
 import '../models/process.dart';
 import '../models/user.dart';
+
 
 class RemoteDatabase {
   static late FirebaseFirestore db;
@@ -60,7 +62,7 @@ class RemoteDatabase {
     try {
       QuerySnapshot<Map<String, dynamic>> value = await getUserData()
           .collection('ListFolders').get();
-      for(var doc in value.docs) {
+      for (var doc in value.docs) {
         Map<String, dynamic> element = doc.data();
         userAllFolders.add(AppFolder(
             id: doc.id,
@@ -70,5 +72,31 @@ class RemoteDatabase {
       }
     } on SocketException catch (e) {print(e.toString());}
     return userAllFolders;
+  }
+
+  static Future<List<ProcessComponent>> getProcessComponents(String processID) async {
+    List<ProcessComponent> processComponents = [];
+    try {
+      QuerySnapshot<Map<String, dynamic>> components = await getUserData()
+          .collection('ListProcess').doc(processID).collection('Components').get();
+      for (var element in components.docs) {
+        Map<String, dynamic> componentData = element.data();
+        List<dynamic> componentDataList = [];
+        if (componentData['data'] != null && componentData['data'].length != 0) {
+          componentDataList = componentData['data'];
+        }
+        ProcessComponent component = ProcessComponent(
+            id: element.id,
+            processID: processID,
+            widget: componentData['componentWidget'],
+            index: componentData['componentIndex'],
+            data: componentDataList
+        );
+        processComponents.add(component);
+      }
+      processComponents.sort((a, b) => a.index.compareTo(b.index));
+    } on SocketException catch (e) {print(e.toString());}
+
+    return processComponents;
   }
 }

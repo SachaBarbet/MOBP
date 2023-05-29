@@ -30,7 +30,6 @@ class UserAuthentication {
           AppUser.name = auth.currentUser!.displayName!;
         }
         AppUser.id = auth.currentUser!.uid;
-        return true;
       } on FirebaseAuthException catch (e) {
         if (e.code == 'user-not-found') {
           print('No user found for that email.');
@@ -39,7 +38,7 @@ class UserAuthentication {
         }
       }
     }
-    return false;
+    return true;
   }
 
   static Future<bool> signUp(String email, String password, String name) async {
@@ -47,10 +46,9 @@ class UserAuthentication {
       try {
         await auth.createUserWithEmailAndPassword(email: email, password: password);
         await auth.currentUser?.updateDisplayName(name);
-        return true;
-      } catch(e) {print(e);}
+      } catch(e) {print(e.toString());}
     }
-    return false;
+    return true;
   }
 
   static Future<void> signOut() async {

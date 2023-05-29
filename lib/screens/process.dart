@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:mobp/screens/edit_process_component.dart';
+import 'package:mobp/utilities/remote_database.dart';
 
+import '../models/component.dart';
 import '../models/process.dart';
+import '../utilities/locale_database.dart';
+import 'auth.dart';
 
 class ProcessScreen extends StatefulWidget {
   const ProcessScreen({super.key, required this.process});
@@ -11,8 +16,34 @@ class ProcessScreen extends StatefulWidget {
 }
 
 class _ProcessScreen extends State<ProcessScreen> {
-  Icon buttonIcon = const Icon(Icons.list);
-  bool stateAddComponent = false;
+
+  late Future<List<ProcessComponent>> components;
+
+  Future<List<ProcessComponent>> getAllWidgets(context) async {
+    List<ProcessComponent> components = [];
+    if (LocaleDatabase.connected) {
+      components = await RemoteDatabase.getProcessComponents(widget.process.id);
+    }
+    return components;
+  }
+
+  void reloadData() {
+    setState(() {
+      components = getAllWidgets(context);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (!LocaleDatabase.connected) {
+      WidgetsBinding.instance.addPostFrameCallback((_) =>
+          Navigator.push(context, MaterialPageRoute(
+              builder: (context) => const Auth())));
+    }
+    components = getAllWidgets(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,104 +51,60 @@ class _ProcessScreen extends State<ProcessScreen> {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         backgroundColor: const Color(0xFF3D3B3C),
+        appBar: AppBar(
+          backgroundColor: const Color(0xFFEAC435),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          title: Text(widget.process.name, style: const TextStyle(color: Colors.white)),
+          centerTitle: true,
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(right: 2.0),
+              child: IconButton(icon: const Icon(Icons.refresh, color: Colors.white,), onPressed: (){
+                reloadData();
+              },),
+            ),
+            IconButton(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(
+                    builder: (context) => EditProcessComponent(process: widget.process)));
+              },
+              icon: const Icon(Icons.edit))
+          ],
+        ),
         body: Padding(
-          padding: const EdgeInsets.only(top: 41, bottom: 15, left: 15, right: 15),
+          padding: const EdgeInsets.only(top: 20, bottom: 20, left: 15, right: 15),
           child: Container(
             decoration: const BoxDecoration(color: Color(0xFF262525), borderRadius: BorderRadius.all(Radius.circular(5))),
             child: Center(
               child: Padding(
                 padding: const EdgeInsets.only(left: 15, right: 15),
-                child: ListView(
-                  children: [
-                    Container(
-                      alignment: Alignment.center,
-                      child: const Padding(
-                        padding: EdgeInsets.all(15),
-                        child: Text("Ajout de stock", style: TextStyle(fontSize: 32, color: Colors.white),),
-                      ),
-                    ),
-                    Container(
-                      height: 2,
-                      decoration: const BoxDecoration(color: Color(0xFF3D3B3C)),
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.all(15),
-                      child: Text("1. Lancer l'ERP", style: TextStyle(color: Colors.red, fontSize: 22),),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(15),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
-                          Padding(
-                            padding: EdgeInsets.all(2),
-                            child: Text("- Lancer la connection TSE avec vos identifiants", style: TextStyle(color: Colors.white, fontSize: 18),),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.all(2),
-                            child: Text("- Ouvrir l'ERP", style: TextStyle(color: Colors.white, fontSize: 18),),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.all(15),
-                      child: Text("2. Ouvrir l'outil de stock", style: TextStyle(color: Colors.red, fontSize: 22),),
-                    ),
-                    const Image(
-                        image: AssetImage('assets/images/process_exp1.png')
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.all(15),
-                      child: Text("3. Saisir les données", style: TextStyle(color: Colors.red, fontSize: 22),),
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
-                        Padding(
-                          padding: EdgeInsets.all(2),
-                          child: Text("- saisir l'article", style: TextStyle(color: Colors.white, fontSize: 18),),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.all(2),
-                          child: Text("- saisir l'emplacement", style: TextStyle(color: Colors.white, fontSize: 18),),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.all(2),
-                          child: Text("- saisir la quantité", style: TextStyle(color: Colors.white, fontSize: 18),),
-                        ),
-                      ],
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.all(15),
-                      child: Text("4. Valider et vérifier le mouvement de stock", style: TextStyle(color: Colors.red, fontSize: 22),),
-                    ),
-                  ],
-                ),
+                child: FutureBuilder(
+                  future: components,
+                  builder: (context, snapshot) {
+                    List<ProcessComponent> components = [ProcessComponent(id: "", widget: "error", index: 0, data: ['No data'], processID: '')];
+                    if(snapshot.hasData) {
+                      components = snapshot.data!;
+                    } else if (snapshot.hasError) {
+                      components = [
+                        ProcessComponent(id: "", widget: "error", index: 0, data: ['Result : ${snapshot.error}'], processID: '')
+                      ];
+                    }
+                    return Center(
+                      child: ListView(
+                        children: components.map((component) {
+                          return component.getWidget();
+                        }).toList(),
+                      )
+                    );
+                  },
+                )
               ),
             ),
           ),
         ),
-
-        floatingActionButton: Padding(
-          padding: const EdgeInsets.only(bottom: 25, right: 8),
-          child: FloatingActionButton(
-            backgroundColor: const Color(0xFFEAC435),
-            onPressed: () {
-              setState(() {
-                if (stateAddComponent == false) {
-                  buttonIcon = const Icon(Icons.close);
-                  stateAddComponent = true;
-                } else {
-                  buttonIcon = const Icon(Icons.list);
-                  stateAddComponent = false;
-                }
-              });
-            },
-            child: buttonIcon,
-          ),
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       ),
     );
   }

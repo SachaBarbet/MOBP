@@ -23,7 +23,7 @@ class _Account extends State<Account> {
       home: Scaffold(
         backgroundColor: const Color(0xFF262525),
         body: Padding(
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.only(top: 30, right: 15, left: 15),
           child: Center(
             child: Column(
               children: [

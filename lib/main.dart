@@ -4,7 +4,7 @@ import 'package:mobp/screens/home.dart';
 import 'package:mobp/utilities/authentication.dart';
 import 'package:mobp/utilities/locale_database.dart';
 import 'package:mobp/utilities/remote_database.dart';
-import 'models/user.dart';
+import 'package:mobp/models/user.dart';
 
 
 Future<void> main() async {

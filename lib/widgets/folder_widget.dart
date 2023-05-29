@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:mobp/models/folder.dart';
 import 'package:mobp/models/process.dart';
+import 'package:mobp/screens/folder.dart';
 
 import '../models/user.dart';
+import '../screens/edit_folder.dart';
 import '../utilities/remote_database.dart';
 
 
@@ -49,8 +51,15 @@ class FolderWidget {
     }
   }
 
-  Future<void> editFolder(context) async {}
-  Future<void> screenFolder(context) async {}
+  Future<void> editFolder(context) async {
+    Navigator.push(context, MaterialPageRoute(
+        builder: (context) => EditFolder(folder: folder)));
+  }
+
+  Future<void> screenFolder(context) async {
+    Navigator.push(context, MaterialPageRoute(
+        builder: (context) => FolderScreen(folder: folder)));
+  }
 
   Widget getWidget(context) {
     return Container(
@@ -120,7 +129,7 @@ class FolderWidget {
     );
   }
 
-  static Future<List<Widget>> getFolderWidgets(context) async {
+  static Future<List<Widget>> getFolderWidgets(BuildContext context) async {
     List<Widget> widgetsFolder = [];
     if (AppUser.id.isNotEmpty) {
       List<AppFolder> userAllFolders = await RemoteDatabase.getAllFolders();
@@ -129,7 +138,15 @@ class FolderWidget {
       }
     }
 
-    if (widgetsFolder.isEmpty) widgetsFolder.add(const Text('No folder'));
+    if (widgetsFolder.isEmpty) {
+      widgetsFolder.add(const Center(
+        child: Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Text('You don\'t have a folder, you can create one with the + button.', style: TextStyle(color: Color(0xFFAAAAAA)),),
+        ),
+      ));
+    }
+
     return widgetsFolder;
   }
 }

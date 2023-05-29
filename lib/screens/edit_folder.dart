@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../models/folder.dart';
 import '../utilities/remote_database.dart';
 
-class AddFolder extends StatelessWidget {
-  const AddFolder({super.key});
+class EditFolder extends StatelessWidget {
+  const EditFolder({super.key, required this.folder});
+  final AppFolder folder;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +20,7 @@ class AddFolder extends StatelessWidget {
       FormState? formState = formKey.currentState!;
       if(formState.validate()) {
         formState.save();
-        await RemoteDatabase.getUserData().collection('ListFolders').add({
+        await RemoteDatabase.getUserData().collection('ListFolders').doc(folder.id).update({
           "name": name,
           "description": description
         });
@@ -49,17 +51,18 @@ class AddFolder extends StatelessWidget {
                 children: [
                   const Padding(
                     padding: EdgeInsets.only(bottom: 30),
-                    child: Text('New Folder', style: TextStyle(color: Colors.white, fontSize: 36)),
+                    child: Text('Edit Folder', style: TextStyle(color: Colors.white, fontSize: 36)),
                   ),
                   TextFormField(
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please type a name for your new folder !';
+                        return 'Please type a name for your folder !';
                       } else if (value.length > 200) {
                         return '';
                       }
                       return null;
                     },
+                    initialValue: folder.name,
                     onSaved: (value) => name = value!,
                     style: const TextStyle(color: Colors.white),
                     decoration: const InputDecoration(
@@ -70,6 +73,7 @@ class AddFolder extends StatelessWidget {
                   TextFormField(
                     onSaved: (value) => description = value!,
                     style: const TextStyle(color: Colors.white),
+                    initialValue: folder.description,
                     decoration: const InputDecoration(
                       labelText: 'Description',
                       labelStyle: TextStyle(color: Color(0xFFAAAAAA)),
@@ -81,7 +85,7 @@ class AddFolder extends StatelessWidget {
                         onPressed: () async {
                           await addFolder();
                         },
-                        child: const Text('ADD', style: TextStyle(color: Color(0xFFEAC435), fontSize: 20),)
+                        child: const Text('EDIT', style: TextStyle(color: Color(0xFFEAC435), fontSize: 20),)
                     ),
                   )
                 ],

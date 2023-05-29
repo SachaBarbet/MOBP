@@ -2,21 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:mobp/utilities/remote_database.dart';
 import 'package:mobp/widgets/dropdown_widget.dart';
 
+import '../models/folder.dart';
+import '../models/process.dart';
 
-class AddProcess extends StatefulWidget {
-  const AddProcess({super.key});
+
+class EditProcess extends StatefulWidget {
+  const EditProcess({super.key, required this.process});
+  final AppProcess process;
 
   @override
-  State<StatefulWidget> createState() => _AddProcess();
+  State<StatefulWidget> createState() => _EditProcess();
 }
 
-class _AddProcess extends State<AddProcess> {
+class _EditProcess extends State<EditProcess> {
   Future<List<DropdownMenuItem<String>>> folders = DropdownWidget.getDropDownWidgets();
   String dropdownValue = "";
+  AppFolder folder = AppFolder(id:'', name:'', description:'');
 
   @override
   void initState() {
     super.initState();
+    widget.process.getFolder().then((value) => folder = value);
+    if(folder.id == '') {
+      folder.name = 'No folder found';
+    }
   }
 
   void reloadData() {
@@ -34,11 +43,11 @@ class _AddProcess extends State<AddProcess> {
       Navigator.pop(context);
     }
 
-    Future<void> addProcess() async {
+    Future<void> editProcess() async {
       FormState? formState = formKey.currentState!;
       if(formState.validate()) {
         formState.save();
-        await RemoteDatabase.getUserData().collection('ListProcess').add({
+        await RemoteDatabase.getUserData().collection('ListProcess').doc(widget.process.id).update({
           "name": name,
           "description": description,
           "folderID": dropdownValue
@@ -63,14 +72,14 @@ class _AddProcess extends State<AddProcess> {
           child: Form(
             key: formKey,
             child: Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
+              padding: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Padding(
                     padding: EdgeInsets.only(bottom: 30),
-                    child: Text('New Process', style: TextStyle(color: Colors.white, fontSize: 36)),
+                    child: Text('Edit Process', style: TextStyle(color: Colors.white, fontSize: 36)),
                   ),
                   TextFormField(
                     style: const TextStyle(color: Colors.white),
@@ -82,6 +91,7 @@ class _AddProcess extends State<AddProcess> {
                       }
                       return null;
                     },
+                    initialValue: widget.process.name,
                     onSaved: (value) => name = value!,
                     decoration: const InputDecoration(
                       labelText: 'Name',
@@ -91,6 +101,7 @@ class _AddProcess extends State<AddProcess> {
                   TextFormField(
                     style: const TextStyle(color: Colors.white),
                     onSaved: (value) => description = value!,
+                    initialValue: widget.process.description,
                     decoration: const InputDecoration(
                       labelText: 'Description',
                       labelStyle: TextStyle(color: Color(0xFFAAAAAA)),
@@ -98,7 +109,7 @@ class _AddProcess extends State<AddProcess> {
                   ),
                   FutureBuilder<List<DropdownMenuItem<String>>>(
                     future: folders,
-                    initialData: [DropdownWidget(id: '', name: 'No folder found').getWidget()],
+                    initialData: [DropdownWidget(id: folder.id, name: folder.name).getWidget()],
                     builder: (context, snapshot) {
                       List<DropdownMenuItem<String>> children;
                       if(snapshot.hasData) {
@@ -135,9 +146,9 @@ class _AddProcess extends State<AddProcess> {
                     padding: const EdgeInsets.all(8.0),
                     child: TextButton(
                         onPressed: () async {
-                          await addProcess();
+                          await editProcess();
                         },
-                        child: const Text('ADD', style: TextStyle(color: Color(0xFFEAC435), fontSize: 20),)
+                        child: const Text('EDIT', style: TextStyle(color: Color(0xFFEAC435), fontSize: 20),)
                     ),
                   )
                 ],
